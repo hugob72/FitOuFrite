@@ -34,22 +34,86 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/container"
-        android:layout_width="223dp"
-        android:layout_height="34dp"
+        android:layout_width="211dp"
+        android:layout_height="75dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="211dp"
+        android:layout_marginTop="190dp"
         app:layout_constraintStart_toEndOf="@+id/prenomTextView"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/prenomInputText"
             style="@style/Widget.AppCompat.ActionBar"
-            android:layout_width="219dp"
-            android:layout_height="25dp"
+            android:layout_width="208dp"
+            android:layout_height="67dp"
             android:hint="Veuillez indiquer votre prénom"
             android:inputType="text|textPersonName"
             android:textSize="10sp"
             tools:visibility="invisible" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="273dp"
+        android:layout_height="554dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="96dp"
+        android:contentDescription="logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/container"
+        app:srcCompat="@drawable/android_open"
+        android:src="@drawable/android_open" />
+
+
+    <LinearLayout
+        android:id="@+id/messageContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="32dp"
+        android:background="@color/message_box"
+        android:orientation="vertical"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/prenomInputText">
+
+        <TextView
+            android:id="@+id/bonjourText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/message_bonjour_default"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/imcText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/message_imc_default"
+            android:textColor="@color/gray_text"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/questionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/message_question_default"
+            android:textColor="@color/gray_text"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        tools:layout_editor_absoluteX="117dp"
+        tools:layout_editor_absoluteY="385dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
