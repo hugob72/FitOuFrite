@@ -5,6 +5,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,20 +19,22 @@ import androidx.core.view.WindowInsetsCompat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NutritionActivity extends AppCompatActivity {
+public class AddMealActivity extends AppCompatActivity {
 
     AutoCompleteTextView autoComplete = null;
-    Button btnAjouter = null;
-    Spinner spinnerRepas = null;
+    Button ajouterButton = null;
+    Button supprimerButton = null;
+    Spinner repasSpinner = null;
 
     private List<Ingredient> baseAliments;
     private List<IngredientSaisi> alimentsConsommes;
+    private int indexRepasEdition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_nutrition);
+        setContentView(R.layout.activity_add_meal);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.tvSectionRepas), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -42,6 +45,22 @@ public class NutritionActivity extends AppCompatActivity {
 
         initialiserBaseAliments();
         setupSpinners();
+
+        // Cas de l'édition d'un repas
+        indexRepasEdition = getIntent().getIntExtra("INDEX_REPAS", -1);
+        if (indexRepasEdition != -1) {
+            Repas repasAEditer = MockDataGenerator.getHistoriqueRepas().get(indexRepasEdition);
+
+            EditText etDate = findViewById(R.id.etDate);
+            etDate.setText(repasAEditer.getDate());
+            repasSpinner.setSelection(repasAEditer.getTypeRepas().ordinal());
+            alimentsConsommes.addAll(repasAEditer.getIngredientSaisis());
+            afficherListeIngredients();
+
+            Button btnEnregistrer = findViewById(R.id.btnEnregistrerRepas);
+            btnEnregistrer.setText("Mettre à jour");
+        }
+
 
         // Configuration de l'Auto-complétion des aliments
         autoComplete = findViewById(R.id.autoCompleteIngredient);
@@ -73,8 +92,34 @@ public class NutritionActivity extends AppCompatActivity {
             }
         });
 
-        btnAjouter = findViewById(R.id.ajouterButton);
-        btnAjouter.setOnClickListener(v -> ajouterIngredient());
+        // Enregistrement
+        Button btnEnregistrer = findViewById(R.id.btnEnregistrerRepas);
+        btnEnregistrer.setOnClickListener(v -> {
+            EditText etDate = findViewById(R.id.etDate);
+            Spinner spinnerType = findViewById(R.id.spinnerTypeRepas);
+
+            String date = etDate.getText().toString();
+            TypeRepas typeEnum = (TypeRepas) spinnerType.getSelectedItem();
+
+            if (!date.isEmpty() && !alimentsConsommes.isEmpty()) {
+                Repas nouveauRepas = new Repas(date, typeEnum, new ArrayList<>(alimentsConsommes));
+                if (indexRepasEdition != -1) {
+                    MockDataGenerator.getHistoriqueRepas().set(indexRepasEdition, nouveauRepas);
+                    Toast.makeText(this, "Repas mis à jour !", Toast.LENGTH_SHORT).show();
+                }
+                // Sinon, c'est une création classique
+                else {
+                    MockDataGenerator.ajouterUnRepas(nouveauRepas);
+                    Toast.makeText(this, "Nouveau repas enregistré !", Toast.LENGTH_SHORT).show();
+                }
+                finish();
+            } else {
+                Toast.makeText(this, "Date vide ou aucun ingrédient !", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ajouterButton = findViewById(R.id.ajouterButton);
+        ajouterButton.setOnClickListener(v -> ajouterIngredient());
     }
 
 
@@ -89,13 +134,14 @@ public class NutritionActivity extends AppCompatActivity {
     }
 
     private void setupSpinners() {
-        spinnerRepas = findViewById(R.id.spinnerTypeRepas);
-        String[] typesRepas = {"Petit-déjeuner", "Déjeuner", "Dîner", "Extra"};
-        ArrayAdapter<String> adapterRepas = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, typesRepas);
-        spinnerRepas.setAdapter(adapterRepas);
+        repasSpinner = findViewById(R.id.spinnerTypeRepas);
+        ArrayAdapter<TypeRepas> adapterRepas = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, TypeRepas.values());
+        repasSpinner.setAdapter(adapterRepas);
     }
 
+    /** Ajoute un ingrédient au Repas */
     private void ajouterIngredient() {
+        // TODO : A deplacer dans le onCreate() ?
         AutoCompleteTextView autoComplete = findViewById(R.id.autoCompleteIngredient);
         EditText quantiteEditText = findViewById(R.id.quantiteEditText);
         EditText proteinesEditText = findViewById(R.id.proteinesEditText);
@@ -125,6 +171,8 @@ public class NutritionActivity extends AppCompatActivity {
 
                 Toast.makeText(this, nom + " ajouté avec succès !", Toast.LENGTH_SHORT).show();
 
+                afficherListeIngredients();
+
                 autoComplete.getText().clear();
                 quantiteEditText.getText().clear();
                 proteinesEditText.getText().clear();
@@ -136,6 +184,44 @@ public class NutritionActivity extends AppCompatActivity {
             }
         } else {
             Toast.makeText(this, "Veuillez remplir les champs obligatoires", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /** Reconstruit la liste des ingrédients qui composent un repas */
+    private void afficherListeIngredients() {
+        LinearLayout linearLayoutIngredients = findViewById(R.id.linearLayoutIngredients);
+        linearLayoutIngredients.removeAllViews();
+
+        for (int i = 0; i < alimentsConsommes.size(); i++) {
+            IngredientSaisi saisi = alimentsConsommes.get(i);
+            final int indexIngredient = i;
+
+            // Création de la ligne de l'ingrédient
+            LinearLayout ligneLayout = new LinearLayout(this);
+            ligneLayout.setOrientation(LinearLayout.HORIZONTAL);
+            ligneLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            ligneLayout.setPadding(0, 16, 0, 16);
+
+            // Création du texte
+            TextView ingredientTextView = new TextView(this);
+            ingredientTextView.setText("- " + saisi.getIngredient().getNom() + " (" + saisi.getQuantiteEnGrammes() + "g)");
+            ingredientTextView.setTextSize(16f);
+            LinearLayout.LayoutParams paramsTexte = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
+            ingredientTextView.setLayoutParams(paramsTexte);
+
+            // Création du bouton Supprimer
+            supprimerButton = new Button(this);
+            supprimerButton.setText("X");
+            supprimerButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            supprimerButton.setOnClickListener(v -> {
+                alimentsConsommes.remove(indexIngredient);
+                afficherListeIngredients();
+                Toast.makeText(AddMealActivity.this, "Ingrédient supprimé", Toast.LENGTH_SHORT).show();
+            });
+
+            ligneLayout.addView(ingredientTextView);
+            ligneLayout.addView(supprimerButton);
+            linearLayoutIngredients.addView(ligneLayout);
         }
     }
 
