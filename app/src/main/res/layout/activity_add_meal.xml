@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".AddMealActivity">
+
+    <TextView
+        android:id="@+id/tvSectionRepas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Informations du Repas"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/etDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Date (ex: 21/04/2026)"
+        android:inputType="date"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvSectionRepas"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/spinnerTypeRepas" />
+
+    <Spinner
+        android:id="@+id/spinnerTypeRepas"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/etDate"
+        app:layout_constraintBottom_toBottomOf="@id/etDate"
+        app:layout_constraintStart_toEndOf="@id/etDate"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSectionIngredient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ajouter un Ingrédient"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/etDate"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteIngredient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nom de l'ingrédient (ex: Riz)"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvSectionIngredient"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/quantiteEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Quantité en grammes (ex: 150)"
+        android:inputType="numberDecimal"
+        app:layout_constraintTop_toBottomOf="@id/autoCompleteIngredient"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/proteinesEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Prot (g)"
+        android:inputType="numberDecimal"
+        app:layout_constraintTop_toBottomOf="@id/quantiteEditText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/glucidesEditText" />
+
+    <EditText
+        android:id="@+id/glucidesEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Gluc (g)"
+        android:inputType="numberDecimal"
+        app:layout_constraintTop_toTopOf="@id/proteinesEditText"
+        app:layout_constraintStart_toEndOf="@id/proteinesEditText"
+        app:layout_constraintEnd_toStartOf="@id/lipidesEditText" />
+
+    <EditText
+        android:id="@+id/lipidesEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Lip (g)"
+        android:inputType="numberDecimal"
+        app:layout_constraintTop_toTopOf="@id/proteinesEditText"
+        app:layout_constraintStart_toEndOf="@id/glucidesEditText"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/ajouterButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ajouter au repas"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/proteinesEditText"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintTop_toBottomOf="@id/ajouterButton"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scrollViewIngredients"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/divider2"
+        app:layout_constraintBottom_toTopOf="@id/btnEnregistrerRepas"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutIngredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnEnregistrerRepas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="45dp"
+        android:text="Enregistrer le repas"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,4 +24,12 @@ public class IngredientSaisi {
     public double getKcalTotales() {
         return (ingredient.getKcal() * quantiteEnGrammes) / 100.0;
     }
+
+    public Ingredient getIngredient() {
+        return ingredient;
+    }
+
+    public double getQuantiteEnGrammes() {
+        return quantiteEnGrammes;
+    }
 }
