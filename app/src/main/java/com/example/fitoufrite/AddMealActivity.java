@@ -117,7 +117,8 @@ public class AddMealActivity extends AppCompatActivity {
         // Cas de l'édition d'un repas
         indexRepasEdition = getIntent().getIntExtra("INDEX_REPAS", -1);
         if (indexRepasEdition != -1) {
-            Repas repasExistant = MockDataGenerator.getHistoriqueRepas().get(indexRepasEdition);
+            List<Repas> listeRepas = GestionnaireRepas.chargerListe(this);
+            Repas repasExistant = listeRepas.get(indexRepasEdition);
 
             dateRepasEditText.setText(sdf.format(repasExistant.getDate()));
             repasSpinner.setSelection(repasExistant.getTypeRepas().ordinal());
@@ -238,13 +239,16 @@ public class AddMealActivity extends AppCompatActivity {
                     java.util.Date dateDuRepas = sdf.parse(dateStr);
                     Repas nouveauRepas = new Repas(dateDuRepas, typeEnum, new ArrayList<>(alimentsConsommes));
 
+                    List<Repas> listeRepas = GestionnaireRepas.chargerListe(AddMealActivity.this);
+
                     if (indexRepasEdition != -1) {
-                        MockDataGenerator.getHistoriqueRepas().set(indexRepasEdition, nouveauRepas);
+                        listeRepas.set(indexRepasEdition, nouveauRepas);
                         Toast.makeText(this, getString(R.string.toast_repas_maj), Toast.LENGTH_SHORT).show();
                     } else {
-                        MockDataGenerator.ajouterUnRepas(nouveauRepas);
+                        listeRepas.add(nouveauRepas);
                         Toast.makeText(this, getString(R.string.toast_repas_nouveau), Toast.LENGTH_SHORT).show();
                     }
+                    GestionnaireRepas.sauvegarderListe(AddMealActivity.this, listeRepas);
                     finish();
                 } catch (java.text.ParseException e) {
                     Toast.makeText(this, getString(R.string.toast_erreur_date_format), Toast.LENGTH_SHORT).show();

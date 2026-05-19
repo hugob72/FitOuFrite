@@ -98,7 +98,7 @@ public class NutritionReportActivity extends AppCompatActivity {
 
 
         // 2. Calcul des nutriments absorbés
-        List<Repas> historique = MockDataGenerator.getHistoriqueRepas();
+        List<Repas> historique = GestionnaireRepas.chargerListe(this);
         double totalKcal = 0;
         double totalProt = 0;
         double totalGluc = 0;

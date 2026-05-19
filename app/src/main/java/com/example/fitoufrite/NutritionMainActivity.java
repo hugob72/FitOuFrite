@@ -49,7 +49,6 @@ public class NutritionMainActivity extends AppCompatActivity {
 
         params.setMargins(0, 0, 0, 2);
 
-        mesRepas = MockDataGenerator.genererHistoriqueRepas();
         linearLayoutRepas = findViewById(R.id.linearLayoutRepas);
 
 
@@ -72,6 +71,7 @@ public class NutritionMainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mesRepas = GestionnaireRepas.chargerListe(this);
         afficherListeRepas();
     }
 
