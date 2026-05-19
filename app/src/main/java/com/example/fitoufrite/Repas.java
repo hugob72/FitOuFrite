@@ -1,33 +1,34 @@
 package com.example.fitoufrite;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Repas {
 
-    private String date;
+    private Date date;
 
     private TypeRepas typeRepas;
 
     private List<IngredientSaisi> ingredientSaisis;
 
-    public Repas(String date, TypeRepas typeRepas) {
+    public Repas(Date date, TypeRepas typeRepas) {
         this.date = date;
         this.typeRepas = typeRepas;
         this.ingredientSaisis = new ArrayList<>();
     }
 
-    public Repas(String date, TypeRepas typeRepas, List<IngredientSaisi> ingredientSaisis) {
+    public Repas(Date date, TypeRepas typeRepas, List<IngredientSaisi> ingredientSaisis) {
         this.date = date;
         this.typeRepas = typeRepas;
         this.ingredientSaisis = ingredientSaisis;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

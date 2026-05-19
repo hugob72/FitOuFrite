@@ -3,7 +3,6 @@ package com.example.fitoufrite;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import android.content.Intent;
 
 import androidx.activity.EdgeToEdge;
@@ -12,13 +11,22 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class NutritionMainActivity extends AppCompatActivity {
 
     LinearLayout linearLayoutRepas = null;
     Button newRepasButton = null;
+    Button nutritionsButton = null;
+    private LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+    );
     private List<Repas> mesRepas = null;
+    private SimpleDateFormat sdf = new SimpleDateFormat("EEEE d MMMM", Locale.FRANCE);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +39,23 @@ public class NutritionMainActivity extends AppCompatActivity {
             return insets;
         });
 
+        params.setMargins(0, 0, 0, 2);
+
         mesRepas = MockDataGenerator.genererHistoriqueRepas();
         linearLayoutRepas = findViewById(R.id.linearLayoutRepas);
 
+
+        // Définit le bouton pour ajouter un repas
         newRepasButton = findViewById(R.id.newRepasButton);
         newRepasButton.setOnClickListener(v -> {
             Intent intent = new Intent(NutritionMainActivity.this, AddMealActivity.class);
+            startActivity(intent);
+        });
+
+        // Définit le bouton pour voir le rapport de nutrition
+        nutritionsButton = findViewById(R.id.btnVoirNutritions);
+        nutritionsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(NutritionMainActivity.this, NutritionReportActivity.class);
             startActivity(intent);
         });
 
@@ -48,6 +67,7 @@ public class NutritionMainActivity extends AppCompatActivity {
         afficherListeRepas();
     }
 
+    /** Affiche dans le LinearLayout la liste des repas enregistrés */
     private void afficherListeRepas() {
         linearLayoutRepas.removeAllViews();
 
@@ -56,13 +76,8 @@ public class NutritionMainActivity extends AppCompatActivity {
             final int indexDuRepas = i;
 
             Button buttonRepas = new Button(this);
-            buttonRepas.setText("Repas du " + repas.getDate() + " - " + repas.getTypeRepas());
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
-            params.setMargins(0, 0, 0, 2);
+            String dateFormatee = repas.getDate() != null ? sdf.format(repas.getDate()) : "ERREUR";
+            buttonRepas.setText("Repas du " + dateFormatee + " - " + repas.getTypeRepas());
             buttonRepas.setLayoutParams(params);
 
             buttonRepas.setOnClickListener(v -> {
