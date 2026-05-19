@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_nutrition"
+        android:icon="@drawable/logo_nutrition"
+        android:title="Nutrition"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_email"
+        android:icon="@drawable/logo_mail"
+        android:title="Email"
+        app:showAsAction="ifRoom"/>
+</menu>

@@ -1,11 +1,13 @@
 package com.example.fitoufrite;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.content.Intent;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -38,6 +40,12 @@ public class NutritionMainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        androidx.appcompat.widget.Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         params.setMargins(0, 0, 0, 2);
 

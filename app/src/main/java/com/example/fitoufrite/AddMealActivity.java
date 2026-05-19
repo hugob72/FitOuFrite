@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.core.graphics.Insets;
@@ -68,6 +69,12 @@ public class AddMealActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        androidx.appcompat.widget.Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         alimentsConsommes = new ArrayList<>();
         baseAliments = new ArrayList<>();

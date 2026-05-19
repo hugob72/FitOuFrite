@@ -13,6 +13,7 @@
         android:theme="@style/Theme.FitOuFrite">
         <activity
             android:name=".CalculActivity"
+            android:parentActivityName=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -23,9 +24,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NutritionMainActivity" />
-        <activity android:name=".AddMealActivity" />
-        <activity android:name=".NutritionReportActivity" />
+        <activity android:name=".NutritionMainActivity"
+            android:parentActivityName=".CalculActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AddMealActivity"
+            android:parentActivityName=".NutritionMainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".NutritionReportActivity"
+            android:parentActivityName=".NutritionMainActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

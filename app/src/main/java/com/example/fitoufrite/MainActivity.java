@@ -18,6 +18,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import androidx.appcompat.widget.Toolbar;
+
 public class MainActivity extends AppCompatActivity {
 
     // Image animée
@@ -66,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
 
         // Liaison entre le Java et le XML
         logoImage = findViewById(R.id.logoImage);

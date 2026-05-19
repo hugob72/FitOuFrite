@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -18,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Calendar;
@@ -25,8 +27,6 @@ import java.util.Calendar;
 public class CalculActivity extends AppCompatActivity {
 
     // Boutons de navigation et d'action
-    private Button buttonUp;          // Retour à l'activité principale
-    private Button buttonEmail;       // Ouverture de l'application Email
     private Button buttonDate;        // Ouverture du calendrier
     private Button buttonCalculImc;   // Calcul de l'IMC
     private Button buttonRaz;         // Remise à zéro des champs
@@ -64,9 +64,13 @@ public class CalculActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calcul);
+        androidx.appcompat.widget.Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
-        buttonUp = findViewById(R.id.buttonUp);
-        buttonEmail = findViewById(R.id.buttonEmail);
         buttonDate = findViewById(R.id.buttonDate);
         buttonCalculImc = findViewById(R.id.buttonCalculImc);
         buttonRaz = findViewById(R.id.buttonRaz);
@@ -89,6 +93,24 @@ public class CalculActivity extends AppCompatActivity {
         initialiserTextWatchers();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == R.id.action_email) {
+            envoyerEmail();
+            return true;
+        } else if (item.getItemId() == R.id.action_nutrition) {
+            calculNutrition();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initialiserSpinner() {
         String[] genres = {"Homme", "Femme"};
 
@@ -103,10 +125,6 @@ public class CalculActivity extends AppCompatActivity {
     }
 
     private void initialiserActions() {
-        buttonUp.setOnClickListener(v -> retournerAccueil());
-
-        buttonEmail.setOnClickListener(v -> envoyerEmail());
-
         buttonDate.setOnClickListener(v -> ouvrirCalendrier());
 
         buttonCalculImc.setOnClickListener(v -> calculerImc());
@@ -266,6 +284,11 @@ public class CalculActivity extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_SUBJECT, "IMC");
         intent.putExtra(Intent.EXTRA_TEXT, body);
 
+        startActivity(intent);
+    }
+
+    private void calculNutrition() {
+        Intent intent = new Intent(CalculActivity.this, NutritionMainActivity.class);
         startActivity(intent);
     }
 

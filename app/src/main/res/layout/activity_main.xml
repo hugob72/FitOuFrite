@@ -9,26 +9,45 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/textView4"
+        android:layout_width="370dp"
+        android:layout_height="105dp"
+        android:background="#BDA2D5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextColor="@android:color/white"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
         android:id="@+id/prenomTextView"
         android:layout_width="114dp"
         android:layout_height="33dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="210dp"
+        android:layout_marginTop="30dp"
         android:text="Prénom :"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
     <ImageView
         android:id="@+id/imageView7"
         android:layout_width="242dp"
         android:layout_height="180dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:srcCompat="@drawable/logoview" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -36,9 +55,9 @@
         android:layout_width="211dp"
         android:layout_height="75dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="190dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toEndOf="@+id/prenomTextView"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/imageView7">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/prenomInputText"
@@ -56,12 +75,12 @@
         android:layout_width="273dp"
         android:layout_height="554dp"
         android:layout_marginStart="68dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="90dp"
         android:contentDescription="logo"
+        android:src="@drawable/android_open"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container"
-        app:srcCompat="@drawable/android_open"
-        android:src="@drawable/android_open" />
+        app:srcCompat="@drawable/android_open" />
 
 
     <LinearLayout
