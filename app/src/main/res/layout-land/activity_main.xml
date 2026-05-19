@@ -13,20 +13,21 @@
         android:layout_width="114dp"
         android:layout_height="33dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="210dp"
+        android:layout_marginTop="60dp"
         android:text="Prénom :"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.343"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView7"
-        android:layout_width="242dp"
-        android:layout_height="180dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="204dp"
+        android:layout_height="158dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.026"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logoview" />
@@ -36,7 +37,7 @@
         android:layout_width="211dp"
         android:layout_height="75dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="190dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintStart_toEndOf="@+id/prenomTextView"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -51,31 +52,31 @@
             tools:visibility="invisible" />
     </com.google.android.material.textfield.TextInputLayout>
 
+
     <ImageView
         android:id="@+id/logoImage"
-        android:layout_width="273dp"
-        android:layout_height="554dp"
-        android:layout_marginStart="68dp"
-        android:layout_marginTop="96dp"
+        android:layout_width="258dp"
+        android:layout_height="433dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="48dp"
         android:contentDescription="logo"
+        android:src="@drawable/android_open"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/container"
-        app:srcCompat="@drawable/android_open"
-        android:src="@drawable/android_open" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/android_open" />
 
     <LinearLayout
         android:id="@+id/messageContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="411dp"
+        android:layout_height="120dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginTop="54dp"
+        android:layout_marginEnd="25dp"
         android:background="#7c9fc7"
         android:orientation="vertical"
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container">
 
@@ -110,8 +111,8 @@
         android:id="@+id/buttonCalcul"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="492dp"
+        android:layout_marginStart="596dp"
+        android:layout_marginTop="48dp"
         android:backgroundTint="#3C4D95"
         android:text="Calculer"
         app:layout_constraintStart_toStartOf="parent"
