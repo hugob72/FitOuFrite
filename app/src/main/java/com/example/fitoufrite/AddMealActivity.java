@@ -118,7 +118,7 @@ public class AddMealActivity extends AppCompatActivity {
             afficherListeIngredients();
 
             enregistrerButton = findViewById(R.id.enregistrerRepasButton);
-            enregistrerButton.setText("Mettre à jour");
+            enregistrerButton.setText(getString(R.string.btn_enregistrer_maj));
         }
 
 
@@ -233,17 +233,17 @@ public class AddMealActivity extends AppCompatActivity {
 
                     if (indexRepasEdition != -1) {
                         MockDataGenerator.getHistoriqueRepas().set(indexRepasEdition, nouveauRepas);
-                        Toast.makeText(this, "Repas mis à jour !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.toast_repas_maj), Toast.LENGTH_SHORT).show();
                     } else {
                         MockDataGenerator.ajouterUnRepas(nouveauRepas);
-                        Toast.makeText(this, "Nouveau repas enregistré !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.toast_repas_nouveau), Toast.LENGTH_SHORT).show();
                     }
                     finish();
                 } catch (java.text.ParseException e) {
-                    Toast.makeText(this, "Erreur : La date doit être au format jj/MM/aaaa", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.toast_erreur_date_format), Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(this, "Date vide ou aucun ingrédient !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_erreur_vide), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -287,7 +287,7 @@ public class AddMealActivity extends AppCompatActivity {
 
                 alimentsConsommes.add(saisi);
 
-                Toast.makeText(this, nom + " ajouté avec succès !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_ingredient_ajoute, nom), Toast.LENGTH_SHORT).show();
 
                 afficherListeIngredients();
 
@@ -298,10 +298,10 @@ public class AddMealActivity extends AppCompatActivity {
                 lipidesEditText.getText().clear();
 
             } catch (NumberFormatException e) {
-                Toast.makeText(this, "Erreur de format dans les nombres", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_erreur_nombres), Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "Veuillez remplir les champs obligatoires", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_erreur_champs_obligatoires), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -322,7 +322,7 @@ public class AddMealActivity extends AppCompatActivity {
 
             // Création du texte
             TextView ingredientTextView = new TextView(this);
-            ingredientTextView.setText("- " + saisi.getIngredient().getNom() + " (" + saisi.getQuantiteEnGrammes() + "g)");
+            ingredientTextView.setText(getString(R.string.format_ingredient_liste, saisi.getIngredient().getNom(), String.valueOf(saisi.getQuantiteEnGrammes())));
             ingredientTextView.setTextSize(16f);
             LinearLayout.LayoutParams paramsTexte = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
             ingredientTextView.setLayoutParams(paramsTexte);
@@ -334,7 +334,7 @@ public class AddMealActivity extends AppCompatActivity {
             supprimerButton.setOnClickListener(v -> {
                 alimentsConsommes.remove(indexIngredient);
                 afficherListeIngredients();
-                Toast.makeText(AddMealActivity.this, "Ingrédient supprimé", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddMealActivity.this, getString(R.string.toast_ingredient_supprime), Toast.LENGTH_SHORT).show();
             });
 
             ligneLayout.addView(ingredientTextView);

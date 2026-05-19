@@ -45,7 +45,7 @@ public class NutritionReportActivity extends AppCompatActivity {
         spinnerFiltreTemps = findViewById(R.id.spinnerFiltreTemps);
 
         // Configuration du Spinner
-        String[] filtres = {"Aujourd'hui (1 jour)", "Cette semaine (7 jours)", "Ce mois (30 jours)"};
+        String[] filtres = {getString(R.string.filtre_jour), getString(R.string.filtre_semaine), getString(R.string.filtre_mois)};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, filtres);
         spinnerFiltreTemps.setAdapter(adapter);
         spinnerFiltreTemps.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -73,7 +73,7 @@ public class NutritionReportActivity extends AppCompatActivity {
         double recoGluc = RECO_GLUC_JOUR * nbJours;
         double recoLip = RECO_LIP_JOUR * nbJours;
 
-        String affichageRecommande = String.format("%.0f Kcal\n%.1f g Prot\n%.1f g Gluc\n%.1f g Lip", recoKcal, recoProt, recoGluc, recoLip);
+        String affichageRecommande = getString(R.string.format_bilan_nutritionnel, recoKcal, recoProt, recoGluc, recoLip);
         dataObjectifTextView.setText(affichageRecommande);
 
         // Définit la date de seuil
@@ -108,7 +108,7 @@ public class NutritionReportActivity extends AppCompatActivity {
             }
         }
 
-        String affichageAbsorbe = String.format("%.0f Kcal\n%.1f g Prot\n%.1f g Gluc\n%.1f g Lip", totalKcal, totalProt, totalGluc, totalLip);
+        String affichageAbsorbe = getString(R.string.format_bilan_nutritionnel, totalKcal, totalProt, totalGluc, totalLip);
         dataConsommeTextView.setText(affichageAbsorbe);
 
         // Mise en place du graphique (partie faite avec l'assistance de l'IA)
@@ -128,7 +128,7 @@ public class NutritionReportActivity extends AppCompatActivity {
         entries.add(new BarEntry(3f, pctLip));
 
         // 3. Configuration du design de l'ensemble de barres
-        BarDataSet dataSet = new BarDataSet(entries, "% de l'objectif atteint");
+        BarDataSet dataSet = new BarDataSet(entries, getString(R.string.graph_legende));
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         dataSet.setValueTextSize(12f);
 
@@ -136,7 +136,7 @@ public class NutritionReportActivity extends AppCompatActivity {
         nutritionBarChart.setData(barData);
 
         // Axe des abscisses
-        String[] labels = new String[]{"Calories", "Protéines", "Glucides", "Lipides"};
+        String[] labels = new String[]{getString(R.string.graph_label_calories), getString(R.string.graph_label_proteines), getString(R.string.graph_label_glucides), getString(R.string.graph_label_lipides)};
         XAxis xAxis = nutritionBarChart.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);

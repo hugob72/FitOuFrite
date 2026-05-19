@@ -76,8 +76,8 @@ public class NutritionMainActivity extends AppCompatActivity {
             final int indexDuRepas = i;
 
             Button buttonRepas = new Button(this);
-            String dateFormatee = repas.getDate() != null ? sdf.format(repas.getDate()) : "ERREUR";
-            buttonRepas.setText("Repas du " + dateFormatee + " - " + repas.getTypeRepas());
+            String dateFormatee = repas.getDate() != null ? sdf.format(repas.getDate()) :getString(R.string.erreur_date);
+            buttonRepas.setText(getString(R.string.format_bouton_repas, dateFormatee, repas.getTypeRepas().toString()));
             buttonRepas.setLayoutParams(params);
 
             buttonRepas.setOnClickListener(v -> {
