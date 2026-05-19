@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bilan Nutritionnel"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/filtreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Période :"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView" />
+
+    <Spinner
+        android:id="@+id/spinnerFiltreTemps"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/filtreTextView"
+        app:layout_constraintBottom_toBottomOf="@id/filtreTextView"
+        app:layout_constraintStart_toEndOf="@id/filtreTextView"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <View
+        android:id="@+id/dividerReport"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/spinnerFiltreTemps" />
+
+    <!-- ZONE DES RESULTATS -->
+    <TextView
+        android:id="@+id/consommeTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Consommé"
+        android:textStyle="bold"
+        android:textColor="#FF5722"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/dividerReport"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/objectifTextView" />
+
+    <TextView
+        android:id="@+id/objectifTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Objectif (Moyen)"
+        android:textStyle="bold"
+        android:textColor="#4CAF50"
+        app:layout_constraintTop_toTopOf="@id/consommeTextView"
+        app:layout_constraintStart_toEndOf="@id/consommeTextView"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Données dynamiques calculées en Java -->
+    <TextView
+        android:id="@+id/dataConsommeTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="0 Kcal\n0g Prot\n0g Gluc\n0g Lip"
+        android:lineSpacingExtra="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/consommeTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/dateObjectifTextView" />
+
+    <TextView
+        android:id="@+id/dateObjectifTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="2000 Kcal\n75g Prot\n250g Gluc\n70g Lip"
+        android:lineSpacingExtra="8dp"
+        app:layout_constraintTop_toTopOf="@id/dataConsommeTextView"
+        app:layout_constraintStart_toEndOf="@id/dataConsommeTextView"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/nutritionBarChart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/dataConsommeTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

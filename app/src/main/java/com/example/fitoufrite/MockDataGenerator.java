@@ -1,6 +1,7 @@
 package com.example.fitoufrite;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MockDataGenerator {
@@ -24,7 +25,7 @@ public class MockDataGenerator {
             // ---------------------------------------------------------
             // REPAS 1 : Petit-déjeuner
             // ---------------------------------------------------------
-            Repas petitDej = new Repas("22/04/2026", TypeRepas.PETIT_DEJEUNER);
+            Repas petitDej = new Repas(new Date(126, 4, 15), TypeRepas.PETIT_DEJEUNER);
 
             // Ajout des ingrédients directement via la liste initialisée dans le 1er constructeur
             petitDej.getIngredientSaisis().add(new IngredientSaisi(pain, 80.0));   // 80g de pain
@@ -35,7 +36,7 @@ public class MockDataGenerator {
             // ---------------------------------------------------------
             // REPAS 2 : Déjeuner
             // ---------------------------------------------------------
-            Repas dejeuner = new Repas("22/04/2026", TypeRepas.DEJEUNER);
+            Repas dejeuner = new Repas(new Date(), TypeRepas.DEJEUNER);
 
             dejeuner.getIngredientSaisis().add(new IngredientSaisi(riz, 150.0));    // 150g de riz
             dejeuner.getIngredientSaisis().add(new IngredientSaisi(poulet, 120.0)); // 120g de poulet
@@ -47,9 +48,9 @@ public class MockDataGenerator {
             // ---------------------------------------------------------
             List<IngredientSaisi> ingredientsDiner = new ArrayList<>();
             ingredientsDiner.add(new IngredientSaisi(pate, 200.0));  // 200g de pâtes
-            ingredientsDiner.add(new IngredientSaisi(steak, 100.0)); // 100g de steak haché
+            ingredientsDiner.add(new IngredientSaisi(steak, 1000.0)); // 100g de steak haché
 
-            Repas diner = new Repas("22/04/2026", TypeRepas.DINER, ingredientsDiner);
+            Repas diner = new Repas(new Date(), TypeRepas.DINER, ingredientsDiner);
 
             historiqueRepas.add(diner);
         }

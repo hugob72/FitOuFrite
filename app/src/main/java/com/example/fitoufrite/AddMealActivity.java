@@ -1,6 +1,9 @@
 package com.example.fitoufrite;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -11,24 +14,49 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AddMealActivity extends AppCompatActivity {
 
     AutoCompleteTextView autoComplete = null;
+    Spinner spinnerTypeRepas = null;
     Button ajouterButton = null;
     Button supprimerButton = null;
     Spinner repasSpinner = null;
+    EditText dateRepasEditText = null;
+    Button enregistrerButton = null;
 
+    private java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.FRANCE);
     private List<Ingredient> baseAliments;
     private List<IngredientSaisi> alimentsConsommes;
     private int indexRepasEdition = -1;
+    private Timer tempsRecherche = new Timer();
+    private String appId = "7dc497fa";
+    private String appKey = "bf8ea977fb074b79e0729f96bca1aed2";
+    private String urlAPI = "https://api.edamam.com/api/food-database/v2/parser?app_id=" + appId + "&app_key=" + appKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,77 +70,178 @@ public class AddMealActivity extends AppCompatActivity {
         });
 
         alimentsConsommes = new ArrayList<>();
-
-        initialiserBaseAliments();
+        baseAliments = new ArrayList<>();
         setupSpinners();
+
+        // Si on crée un nouveau repas, on met la date d'aujourd'hui par défaut
+        dateRepasEditText = findViewById(R.id.dateRepasEditText);
+        if (indexRepasEdition == -1) {
+            dateRepasEditText.setText(sdf.format(new java.util.Date()));
+        }
+
+        dateRepasEditText.setOnClickListener(v -> {
+            // On récupère la date affichée dans le champs
+            java.util.Calendar calendrier = java.util.Calendar.getInstance();
+            try {
+                if (!dateRepasEditText.getText().toString().isEmpty()) {
+                    calendrier.setTime(sdf.parse(dateRepasEditText.getText().toString()));
+                }
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
+
+            int annee = calendrier.get(java.util.Calendar.YEAR);
+            int mois = calendrier.get(java.util.Calendar.MONTH);
+            int jour = calendrier.get(java.util.Calendar.DAY_OF_MONTH);
+
+            // On affiche le calendrier
+            android.app.DatePickerDialog datePickerDialog = new android.app.DatePickerDialog(
+                    AddMealActivity.this,
+                    (view, year, monthOfYear, dayOfMonth) -> {
+                        java.util.Calendar nouvelleDate = java.util.Calendar.getInstance();
+                        nouvelleDate.set(year, monthOfYear, dayOfMonth);
+                        dateRepasEditText.setText(sdf.format(nouvelleDate.getTime()));
+                    },
+                    annee, mois, jour
+            );
+            datePickerDialog.show();
+        });
 
         // Cas de l'édition d'un repas
         indexRepasEdition = getIntent().getIntExtra("INDEX_REPAS", -1);
         if (indexRepasEdition != -1) {
-            Repas repasAEditer = MockDataGenerator.getHistoriqueRepas().get(indexRepasEdition);
+            Repas repasExistant = MockDataGenerator.getHistoriqueRepas().get(indexRepasEdition);
 
-            EditText etDate = findViewById(R.id.etDate);
-            etDate.setText(repasAEditer.getDate());
-            repasSpinner.setSelection(repasAEditer.getTypeRepas().ordinal());
-            alimentsConsommes.addAll(repasAEditer.getIngredientSaisis());
+            dateRepasEditText.setText(sdf.format(repasExistant.getDate()));
+            repasSpinner.setSelection(repasExistant.getTypeRepas().ordinal());
+            alimentsConsommes.addAll(repasExistant.getIngredientSaisis());
             afficherListeIngredients();
 
-            Button btnEnregistrer = findViewById(R.id.btnEnregistrerRepas);
-            btnEnregistrer.setText("Mettre à jour");
+            enregistrerButton = findViewById(R.id.enregistrerRepasButton);
+            enregistrerButton.setText("Mettre à jour");
         }
 
 
-        // Configuration de l'Auto-complétion des aliments
+        // Configuration de l'auto-complétion des aliments récupéré depuis l'API EDANAM
         autoComplete = findViewById(R.id.autoCompleteIngredient);
-        List<String> nomsAliments = new ArrayList<>();
-        for (Ingredient ingredient : baseAliments) {
-            nomsAliments.add(ingredient.getNom());
-        }
-        ArrayAdapter<String> adapterAutoComplete = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_dropdown_item_1line,
-                nomsAliments
-        );
-        autoComplete.setAdapter(adapterAutoComplete);
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        // Remplissage automatique des champs si un aliment enregistré est sélectionné
-        autoComplete.setOnItemClickListener((parent, view, position, id) -> {
-            String nomChoisi = adapterAutoComplete.getItem(position);
-            Ingredient alimentChoisi = null;
-            for (Ingredient ingredient : baseAliments) {
-                if (ingredient.getNom().equals(nomChoisi)) {
-                    alimentChoisi = ingredient;
-                    break;
+        // Réagit à ce que l'utilisateur saisie
+        autoComplete.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String recherche = s.toString().trim();
+                tempsRecherche.cancel();
+                // On lance la recherche à partir de 2 lettres et si aucune lettre n'a été saisie depuis 1000 ms
+                if (recherche.length() >= 2) {
+                    tempsRecherche = new Timer();
+                    tempsRecherche.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            JsonObjectRequest request = new JsonObjectRequest(
+                                    Request.Method.GET,
+                                    urlAPI + "&ingr=" + recherche,
+                                    null,
+                                    new Response.Listener<JSONObject>() {
+                                        @Override
+                                        public void onResponse(JSONObject response) {
+                                            Gson gson = new Gson();
+                                            JsonElement jsonElement = gson.fromJson(response.toString(), JsonElement.class);
+
+                                            try {
+                                                JSONObject rootObject = new JSONObject(jsonElement.toString());
+                                                JSONArray hintsArray = rootObject.getJSONArray("hints");
+                                                baseAliments.clear();
+                                                List<String> nomIngredients = new ArrayList<>();
+
+                                                if (hintsArray.length() > 0) {
+                                                    for (int i = 0; i < hintsArray.length(); i++) {
+                                                        JSONObject food = hintsArray.getJSONObject(i).getJSONObject("food");
+                                                        JSONObject nutriments = food.getJSONObject("nutrients");
+
+                                                        String nom = food.getString("label");
+
+                                                        double kcal = nutriments.optDouble("ENERC_KCAL", 0.0);
+                                                        double proteines = nutriments.optDouble("PROCNT", 0.0);
+                                                        double glucides = nutriments.optDouble("CHOCDF", 0.0);
+                                                        double lipides = nutriments.optDouble("FAT", 0.0);
+
+                                                        baseAliments.add(new Ingredient(nom, proteines, glucides, lipides, kcal, "N/A"));
+                                                        nomIngredients.add(nom);
+                                                    }
+                                                }
+
+                                                // Mise à jour de la liste déroulante
+                                                ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                                                        AddMealActivity.this,
+                                                        android.R.layout.simple_dropdown_item_1line,
+                                                        nomIngredients
+                                                );
+                                                autoComplete.setAdapter(adapter);
+                                                autoComplete.showDropDown();
+
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            Log.e("Edamam API Error", error.toString());
+                                        }
+                                    }
+                            );
+                            requestQueue.add(request);
+                        }
+                    }, 1000);
+
                 }
-            }
-            if (alimentChoisi != null) {
-                ((EditText) findViewById(R.id.proteinesEditText)).setText(String.valueOf(alimentChoisi.getProteines()));
-                ((EditText) findViewById(R.id.glucidesEditText)).setText(String.valueOf(alimentChoisi.getGlucides()));
-                ((EditText) findViewById(R.id.lipidesEditText)).setText(String.valueOf(alimentChoisi.getLipides()));
             }
         });
 
-        // Enregistrement
-        Button btnEnregistrer = findViewById(R.id.btnEnregistrerRepas);
-        btnEnregistrer.setOnClickListener(v -> {
-            EditText etDate = findViewById(R.id.etDate);
-            Spinner spinnerType = findViewById(R.id.spinnerTypeRepas);
+        // Remplissage des champs lorsqu'un ingredient est choisie
+        autoComplete.setOnItemClickListener((parent, view, position, id) -> {
+            String ingredientChoisi = autoComplete.getAdapter().getItem(position).toString();
 
-            String date = etDate.getText().toString();
-            TypeRepas typeEnum = (TypeRepas) spinnerType.getSelectedItem();
+            for (Ingredient ingredient : baseAliments) {
+                if (ingredient.getNom().equals(ingredientChoisi)) {
+                    ((EditText) findViewById(R.id.proteinesEditText)).setText(String.format(java.util.Locale.US, "%.1f", ingredient.getProteines()));
+                    ((EditText) findViewById(R.id.glucidesEditText)).setText(String.format(java.util.Locale.US, "%.1f", ingredient.getGlucides()));
+                    ((EditText) findViewById(R.id.lipidesEditText)).setText(String.format(java.util.Locale.US, "%.1f", ingredient.getLipides()));
+                    break;
+                }
+            }
+        });
 
-            if (!date.isEmpty() && !alimentsConsommes.isEmpty()) {
-                Repas nouveauRepas = new Repas(date, typeEnum, new ArrayList<>(alimentsConsommes));
-                if (indexRepasEdition != -1) {
-                    MockDataGenerator.getHistoriqueRepas().set(indexRepasEdition, nouveauRepas);
-                    Toast.makeText(this, "Repas mis à jour !", Toast.LENGTH_SHORT).show();
+        // Enregistrement du Repas
+        enregistrerButton = findViewById(R.id.enregistrerRepasButton);
+        enregistrerButton.setOnClickListener(v -> {
+            spinnerTypeRepas = findViewById(R.id.spinnerTypeRepas);
+
+            String dateStr = dateRepasEditText.getText().toString();
+            TypeRepas typeEnum = (TypeRepas) spinnerTypeRepas.getSelectedItem();
+
+            if (!dateStr.isEmpty() && !alimentsConsommes.isEmpty()) {
+                try {
+                    java.util.Date dateDuRepas = sdf.parse(dateStr);
+                    Repas nouveauRepas = new Repas(dateDuRepas, typeEnum, new ArrayList<>(alimentsConsommes));
+
+                    if (indexRepasEdition != -1) {
+                        MockDataGenerator.getHistoriqueRepas().set(indexRepasEdition, nouveauRepas);
+                        Toast.makeText(this, "Repas mis à jour !", Toast.LENGTH_SHORT).show();
+                    } else {
+                        MockDataGenerator.ajouterUnRepas(nouveauRepas);
+                        Toast.makeText(this, "Nouveau repas enregistré !", Toast.LENGTH_SHORT).show();
+                    }
+                    finish();
+                } catch (java.text.ParseException e) {
+                    Toast.makeText(this, "Erreur : La date doit être au format jj/MM/aaaa", Toast.LENGTH_SHORT).show();
                 }
-                // Sinon, c'est une création classique
-                else {
-                    MockDataGenerator.ajouterUnRepas(nouveauRepas);
-                    Toast.makeText(this, "Nouveau repas enregistré !", Toast.LENGTH_SHORT).show();
-                }
-                finish();
             } else {
                 Toast.makeText(this, "Date vide ou aucun ingrédient !", Toast.LENGTH_SHORT).show();
             }
@@ -122,17 +251,7 @@ public class AddMealActivity extends AppCompatActivity {
         ajouterButton.setOnClickListener(v -> ajouterIngredient());
     }
 
-
-    private void initialiserBaseAliments() {
-        baseAliments = new ArrayList<>();
-        baseAliments.add(new Ingredient("Riz blanc (cuit)", 2.7, 28.0, 0.3, 130.0, "A"));
-        baseAliments.add(new Ingredient("Steak haché 5%", 21.0, 0.0, 5.0, 129.0, "A"));
-        baseAliments.add(new Ingredient("Pâtes (cuites)", 5.0, 30.0, 1.0, 150.0, "A"));
-        baseAliments.add(new Ingredient("Tomates", 0.9, 3.9, 0.2, 18.0, "A"));
-        baseAliments.add(new Ingredient("Pain blanc", 8.0, 49.0, 1.5, 265.0, "C"));
-        baseAliments.add(new Ingredient("Huile d'olive", 0.0, 0.0, 100.0, 900.0, "C"));
-    }
-
+    /** Met en place le spinner */
     private void setupSpinners() {
         repasSpinner = findViewById(R.id.spinnerTypeRepas);
         ArrayAdapter<TypeRepas> adapterRepas = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, TypeRepas.values());
@@ -141,7 +260,6 @@ public class AddMealActivity extends AppCompatActivity {
 
     /** Ajoute un ingrédient au Repas */
     private void ajouterIngredient() {
-        // TODO : A deplacer dans le onCreate() ?
         AutoCompleteTextView autoComplete = findViewById(R.id.autoCompleteIngredient);
         EditText quantiteEditText = findViewById(R.id.quantiteEditText);
         EditText proteinesEditText = findViewById(R.id.proteinesEditText);
@@ -161,7 +279,7 @@ public class AddMealActivity extends AppCompatActivity {
                 double glucides = Double.parseDouble(glucStr);
                 double lipides = Double.parseDouble(lipStr);
 
-                // Estimation des Kcal pour les ajouts manuels (1g prot/gluc = 4kcal, 1g lip = 9kcal)
+                // Calcul des Kcal (1g protéine et glucide = 4kcal, 1g lipide = 9kcal)
                 double kcalEstime = (proteines * 4) + (glucides * 4) + (lipides * 9);
 
                 Ingredient nouvelIngredient = new Ingredient(nom, proteines, glucides, lipides, kcalEstime, "N/A");
