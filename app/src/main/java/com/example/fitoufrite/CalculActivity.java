@@ -24,30 +24,39 @@ import java.util.Calendar;
 
 public class CalculActivity extends AppCompatActivity {
 
-    private Button buttonUp;
-    private Button buttonEmail;
-    private Button buttonDate;
-    private Button buttonCalculImc;
-    private Button buttonRaz;
+    // Boutons de navigation et d'action
+    private Button buttonUp;          // Retour à l'activité principale
+    private Button buttonEmail;       // Ouverture de l'application Email
+    private Button buttonDate;        // Ouverture du calendrier
+    private Button buttonCalculImc;   // Calcul de l'IMC
+    private Button buttonRaz;         // Remise à zéro des champs
 
+    // Liste déroulante pour le genre
     private Spinner spinnerGenre;
 
-    private EditText dateInputText;
-    private EditText poidsInputText;
-    private EditText tailleInputText;
+    // Champs de saisie utilisateur
+    private EditText dateInputText;   // Date de naissance
+    private EditText poidsInputText;  // Poids en kg
+    private EditText tailleInputText; // Taille en mètre ou centimètre
 
+    // Choix de l'unité de taille
     private RadioButton radioMetre;
     private RadioButton radioCentimetre;
 
+    // Option d'affichage détaillé du résultat
     private CheckBox checkAffichage;
 
+    // Zone d'affichage du résultat
     private TextView resultatText;
 
+    // Dernier IMC calculé (-1 signifie qu'aucun calcul n'a encore été fait)
     private double dernierImc = -1;
 
+    // Constantes pour le stockage local SharedPreferences
     private static final String PREF_NAME = "FitOuFritePrefs";
     private static final String KEY_IMC = "dernier_imc";
 
+    // Message affiché par défaut avant le calcul
     private static final String RESULTAT_DEFAUT =
             "Vous devez cliquer sur le bouton ‘Calculer’ pour obtenir un résultat";
 
@@ -175,8 +184,7 @@ public class CalculActivity extends AppCompatActivity {
             String civilite = genre.equals("Homme") ? "Monsieur" : "Madame";
 
             resultatText.setText(
-                    civilite + ", votre IMC est de " + imcFormate + ".\n" +
-                            "Pour votre catégorie d’âge (" + age + " ans), vous êtes dans la catégorie " + categorie + "."
+                    civilite + ", votre IMC est de " + imcFormate + ".\n" + "Pour votre catégorie d’âge (" + age + " ans), vous êtes dans la catégorie " + categorie + "."
             );
         } else {
             resultatText.setText("Votre IMC est de " + imcFormate + ".");
