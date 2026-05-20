@@ -23,4 +23,38 @@
     <string name="graph_label_proteines">Protéines</string>
     <string name="graph_label_glucides">Glucides</string>
     <string name="graph_label_lipides">Lipides</string>
+
+    <string name="erreur_prenom_vide">Veuillez saisir votre prénom.</string>
+    <string name="format_bonjour">Bonjour %1$s</string>
+    <string name="imc_aucun">Aucun IMC précédent enregistré.</string>
+    <string name="question_calculer">Voulez-vous le calculer ?</string>
+    <string name="format_imc_precedent">Votre dernier IMC était de %1$s</string>
+    <string name="question_recalculer">Voulez-vous le recalculer ?</string>
+
+    <string name="genre_homme">Homme</string>
+    <string name="genre_femme">Femme</string>
+
+    <string name="erreur_champs_vides">Veuillez remplir tous les champs.</string>
+    <string name="erreur_format_date">Format de date attendu : jj/mm/aaaa</string>
+    <string name="erreur_valeur_invalide">Poids ou taille invalide.</string>
+    <string name="erreur_valeur_zero">Le poids et la taille doivent être supérieurs à zéro.</string>
+
+    <string name="civilite_homme">Monsieur</string>
+    <string name="civilite_femme">Madame</string>
+    <string name="format_resultat_complet">%1$s, votre IMC est de %2$s.\nPour votre catégorie d’âge (%3$d ans), vous êtes dans la catégorie %4$s.</string>
+    <string name="format_resultat_simple">Votre IMC est de %1$s.</string>
+
+    <string name="categorie_insuffisance">Insuffisance pondérale</string>
+    <string name="categorie_normal">Normal</string>
+    <string name="categorie_surpoids">Surpoids</string>
+    <string name="categorie_obesite">Obésité</string>
+
+    <string name="email_sujet">IMC</string>
+    <string name="format_email_imc">Mon IMC est de %1$s</string>
+    <string name="email_imc_vide">Mon IMC est de ...</string>
+
+    <string name="dialog_raz_titre">Remise à zéro</string>
+    <string name="dialog_raz_message">Voulez-vous vraiment réinitialiser les champs ?</string>
+    <string name="dialog_oui">Oui</string>
+    <string name="dialog_non">Non</string>
 </resources>

@@ -52,12 +52,11 @@ public class MainActivity extends AppCompatActivity {
             // Yeux fermés
             logoImage.setImageResource(R.drawable.android_close);
 
-            // Après 150 ms, retour aux yeux ouverts
+            // yeux ouverts
             handler.postDelayed(() -> {
                 logoImage.setImageResource(R.drawable.android_open);
             }, 150);
 
-            // Recommencer toutes les 2 secondes
             handler.postDelayed(this, 2000);
         }
     };
@@ -108,9 +107,7 @@ public class MainActivity extends AppCompatActivity {
         // Surveillance du champ prénom
         prenomInputText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Rien à faire ici
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -128,9 +125,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                // Rien à faire ici
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
         // Action du bouton Calculer
@@ -140,23 +135,13 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences preferencesClick = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
             SharedPreferences.Editor editor = preferencesClick.edit();
 
-            // Sauvegarde du prénom
             editor.putString(KEY_PRENOM, prenomActuel);
-
-            /*
-             * TEMPORAIRE POUR TESTER L'AFFICHAGE DE L'IMC :
-             * editor.putString(KEY_IMC, "23.6");
-             */
-
             editor.apply();
 
-            // Relire l'IMC sauvegardé
             String imcActuel = preferencesClick.getString(KEY_IMC, "");
 
-            // Mettre à jour la zone d'affichage
             afficherMessage(prenomActuel, imcActuel);
 
-            // Ouvrir la deuxième activité
             Intent intent = new Intent(MainActivity.this, CalculActivity.class);
             startActivity(intent);
         });
@@ -185,26 +170,25 @@ public class MainActivity extends AppCompatActivity {
 
         if (prenom == null || prenom.trim().isEmpty()) {
             bonjourText.setText("");
-            imcText.setText("Veuillez saisir votre prénom.");
+            imcText.setText(getString(R.string.erreur_prenom_vide));
             questionText.setText("");
             return;
         }
 
-        bonjourText.setText("Bonjour " + prenom);
+        bonjourText.setText(getString(R.string.format_bonjour, prenom));
 
         if (imc == null || imc.trim().isEmpty()) {
-            imcText.setText("Aucun IMC précédent enregistré.");
-            questionText.setText("Voulez-vous le calculer ?");
+            imcText.setText(getString(R.string.imc_aucun));
+            questionText.setText(getString(R.string.question_calculer));
         } else {
-            imcText.setText("Votre dernier IMC était de " + imc);
-            questionText.setText("Voulez-vous le recalculer ?");
+            imcText.setText(getString(R.string.format_imc_precedent, imc));
+            questionText.setText(getString(R.string.question_recalculer));
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         // Arrêter l'animation quand l'activité est détruite
         handler.removeCallbacks(blinkRunnable);
     }

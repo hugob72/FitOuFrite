@@ -27,17 +27,17 @@ import java.util.Calendar;
 public class CalculActivity extends AppCompatActivity {
 
     // Boutons de navigation et d'action
-    private Button buttonDate;        // Ouverture du calendrier
-    private Button buttonCalculImc;   // Calcul de l'IMC
-    private Button buttonRaz;         // Remise à zéro des champs
+    private Button buttonDate;
+    private Button buttonCalculImc;
+    private Button buttonRaz;
 
     // Liste déroulante pour le genre
     private Spinner spinnerGenre;
 
     // Champs de saisie utilisateur
-    private EditText dateInputText;   // Date de naissance
-    private EditText poidsInputText;  // Poids en kg
-    private EditText tailleInputText; // Taille en mètre ou centimètre
+    private EditText dateInputText;
+    private EditText poidsInputText;
+    private EditText tailleInputText;
 
     // Choix de l'unité de taille
     private RadioButton radioMetre;
@@ -49,14 +49,14 @@ public class CalculActivity extends AppCompatActivity {
     // Zone d'affichage du résultat
     private TextView resultatText;
 
-    // Dernier IMC calculé (-1 signifie qu'aucun calcul n'a encore été fait)
+    // Dernier IMC calculé (-1 = aucun calcul encore fait)
     private double dernierImc = -1;
 
     // Constantes pour le stockage local SharedPreferences
     private static final String PREF_NAME = "FitOuFritePrefs";
     private static final String KEY_IMC = "dernier_imc";
 
-    // Message affiché par défaut avant le calcul
+    // Message affichée par défaut avant le calcul
     private static final String RESULTAT_DEFAUT =
             "Vous devez cliquer sur le bouton ‘Calculer’ pour obtenir un résultat";
 
@@ -112,7 +112,7 @@ public class CalculActivity extends AppCompatActivity {
     }
 
     private void initialiserSpinner() {
-        String[] genres = {"Homme", "Femme"};
+        String[] genres = {getString(R.string.genre_homme), getString(R.string.genre_femme)};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
@@ -160,12 +160,12 @@ public class CalculActivity extends AppCompatActivity {
         String tailleTexte = tailleInputText.getText().toString().trim();
 
         if (dateNaissance.isEmpty() || poidsTexte.isEmpty() || tailleTexte.isEmpty()) {
-            Toast.makeText(this, "Veuillez remplir tous les champs.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.erreur_champs_vides), Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (!dateNaissance.matches("\\d{2}/\\d{2}/\\d{4}")) {
-            Toast.makeText(this, "Format de date attendu : jj/mm/aaaa", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.erreur_format_date), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -176,12 +176,12 @@ public class CalculActivity extends AppCompatActivity {
             poids = Double.parseDouble(poidsTexte);
             taille = Double.parseDouble(tailleTexte);
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Poids ou taille invalide.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.erreur_valeur_invalide), Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (poids <= 0 || taille <= 0) {
-            Toast.makeText(this, "Le poids et la taille doivent être supérieurs à zéro.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.erreur_valeur_zero), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -199,13 +199,11 @@ public class CalculActivity extends AppCompatActivity {
         String imcFormate = String.format("%.2f", imc);
 
         if (checkAffichage.isChecked()) {
-            String civilite = genre.equals("Homme") ? "Monsieur" : "Madame";
+            String civilite = genre.equals(getString(R.string.genre_homme)) ? getString(R.string.civilite_homme) : getString(R.string.civilite_femme);
 
-            resultatText.setText(
-                    civilite + ", votre IMC est de " + imcFormate + ".\n" + "Pour votre catégorie d’âge (" + age + " ans), vous êtes dans la catégorie " + categorie + "."
-            );
+            resultatText.setText(getString(R.string.format_resultat_complet, civilite, imcFormate, age, categorie));
         } else {
-            resultatText.setText("Votre IMC est de " + imcFormate + ".");
+            resultatText.setText(getString(R.string.format_resultat_simple, imcFormate));
         }
 
         SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
@@ -236,20 +234,20 @@ public class CalculActivity extends AppCompatActivity {
 
     private String determinerCategorie(double imc, int age) {
         if (age < 35) {
-            if (imc < 18.5) return "Insuffisance pondérale";
-            if (imc < 24.9) return "Normal";
-            if (imc < 29.9) return "Surpoids";
-            return "Obésité";
+            if (imc < 18.5) return getString(R.string.categorie_insuffisance);
+            if (imc < 24.9) return getString(R.string.categorie_normal);
+            if (imc < 29.9) return getString(R.string.categorie_surpoids);
+            return getString(R.string.categorie_obesite);
         } else if (age < 65) {
-            if (imc < 19) return "Insuffisance pondérale";
-            if (imc < 25.9) return "Normal";
-            if (imc < 30.9) return "Surpoids";
-            return "Obésité";
+            if (imc < 19) return getString(R.string.categorie_insuffisance);
+            if (imc < 25.9) return getString(R.string.categorie_normal);
+            if (imc < 30.9) return getString(R.string.categorie_surpoids);
+            return getString(R.string.categorie_obesite);
         } else {
-            if (imc < 21) return "Insuffisance pondérale";
-            if (imc < 27) return "Normal";
-            if (imc < 32) return "Surpoids";
-            return "Obésité";
+            if (imc < 21) return getString(R.string.categorie_insuffisance);
+            if (imc < 27) return getString(R.string.categorie_normal);
+            if (imc < 32) return getString(R.string.categorie_surpoids);
+            return getString(R.string.categorie_obesite);
         }
     }
 
@@ -274,9 +272,9 @@ public class CalculActivity extends AppCompatActivity {
         String body;
 
         if (dernierImc > 0) {
-            body = "Mon IMC est de " + String.format("%.2f", dernierImc);
+            body = getString(R.string.format_email_imc, String.format(java.util.Locale.FRANCE, "%.2f", dernierImc));
         } else {
-            body = "Mon IMC est de ...";
+            body = getString(R.string.email_imc_vide);
         }
 
         Intent intent = new Intent(Intent.ACTION_SENDTO);
